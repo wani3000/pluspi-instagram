@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>한화생명</title>
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      min-height: 100vh;
+      background-color: #f5cfa8;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 16px 0;
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    /* 폰 프레임 */
+    .phone {
+      width: 100%;
+      max-width: 473px;
+      background: #ffffff;
+      border-radius: 40px 40px 0 0;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+      position: relative;
+      height: calc(100vh - 40px);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .phone-inner {
+      overflow-y: auto;
+      flex: 1;
+      padding: 20px 29px 48px;
+      scrollbar-width: none;
+    }
+
+    .phone-inner::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* 모바일/태블릿: 풀스크린 */
+    @media (max-width: 767px) {
+      body {
+        padding: 0;
+        background-color: #ffffff;
+      }
+
+      .phone {
+        max-width: 100%;
+        border-radius: 0;
+        box-shadow: none;
+        height: 100vh;
+      }
+
+      .phone-inner {
+        padding: 20px 20px 48px;
+      }
+    }
+
+    /* 상단 바 */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #F2F2F3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: none;
+      box-shadow: none;
+    }
+
+    /* 프로필 */
+    .profile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 20px;
+      overflow: hidden;
+      background: #ffffff;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .profile-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: #111;
+      letter-spacing: -0.75px;
+      margin-bottom: -14px;
+    }
+
+    .profile-bio {
+      font-size: 18px;
+      font-weight: 400;
+      color: #707075;
+      text-align: center;
+      line-height: 1.6;
+      letter-spacing: -0.75px;
+    }
+
+    /* 소셜 아이콘 */
+    .socials {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 24px;
+      justify-content: center;
+    }
+
+    .social-icon {
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #111;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+
+    .social-icon:hover { opacity: 0.6; }
+
+    /* 구분선 */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: rgba(0,0,0,0.3);
+      margin-bottom: 16px;
+      opacity: 0.3;
+    }
+
+    /* 링크 목록 */
+    .links {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* 흰색 카드 버튼 */
+    .link-card {
+      width: 100%;
+      background: #F2F2F3;
+      position: relative;
+      box-shadow: none;
+      border-radius: 14px;
+      box-shadow: none;
+      text-decoration: none;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      transition: none;
+    }
+
+    .link-card:hover {
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* 이미지 + 텍스트 카드 */
+    .link-card.with-thumb {
+      height: 56px;
+    }
+
+    .link-card .thumb {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 10px;
+      flex-shrink: 0;
+      background: #fff;
+    }
+
+    .link-card .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .link-card .card-text {
+      position: absolute;
+      left: 0;
+      right: 0;
+      font-size: 17px;
+      font-weight: 500;
+      color: #111;
+      text-align: center;
+      letter-spacing: -0.75px;
+      pointer-events: none;
+    }
+
+    /* 텍스트만 카드 */
+    .link-card.text-only {
+      height: 56px;
+      justify-content: center;
+    }
+
+    .link-card.text-only .card-text {
+      padding: 0;
+      text-align: center;
+    }
+
+    /* 유튜브 카드 */
+    .youtube-card {
+      width: 100%;
+      border-radius: 14px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+
+    .youtube-card:hover { transform: translateY(-2px); }
+
+    .youtube-card img {
+      width: 100%;
+      display: block;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+    }
+
+    /* 하단 버튼 */
+    .bottom-btn {
+      margin-top: 40px;
+      width: 100%;
+      background: rgba(255,255,255,0.65);
+      border-radius: 9999px;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 12.1px;
+      font-weight: 600;
+      color: #111;
+      text-decoration: none;
+      letter-spacing: -1px;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: background 0.15s;
+    }
+
+    .bottom-btn:hover { background: rgba(255,255,255,0.85); }
+
+    .bottom-btn img {
+      width: 22px;
+      height: 18px;
+      object-fit: contain;
+    }
+
+    /* 토스트 */
+    .toast {
+      position: absolute;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%) translateY(10px);
+      background: #111;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 12px 20px;
+      border-radius: 100px;
+      white-space: nowrap;
+      z-index: 20;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* 공유 모달 */
+    .share-modal-header {
+      width: 100%;
+      background: #fff;
+      border-radius: 24px 24px 0 0;
+      padding: 36px 24px 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .share-modal-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+
+    .share-modal-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .share-modal-url {
+      font-size: 16px;
+      font-weight: 600;
+      color: #111;
+      text-align: center;
+    }
+
+    .share-copy-btn {
+      background: #f2f2f2;
+      border: none;
+      border-radius: 100px;
+      padding: 10px 24px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: 'Pretendard', sans-serif;
+      color: #333;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+
+    .share-copy-btn:hover { background: #e5e5e5; }
+    .share-copy-btn.copied { background: #e5e5e5; }
+
+    /* 더 이상 사용 안 하는 share header/body 제거 */
+    .share-modal-header, .share-modal-body,
+    .share-modal-avatar, .share-modal-url { display: none; }
+
+    .share-modal-body {
+      width: 100%;
+      background: #fff;
+      padding: 0 24px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .qr-wrap {
+      width: 150px;
+      height: 150px;
+      border-radius: 12px;
+      background: #e0e0e0;
+      flex-shrink: 0;
+    }
+
+    .qr-save-btn {
+      width: 100%;
+      padding: 17px;
+      border-radius: 10px;
+      border: 1.5px solid #ddd;
+      background: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      font-family: 'Pretendard', sans-serif;
+      color: #111;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .qr-save-btn:hover { border-color: #aaa; }
+
+    /* 스토어 선택 버튼 */
+    .store-btn {
+      width: 100%;
+      padding: 16px 20px;
+      border-radius: 12px;
+      margin-bottom: 8px;
+      border: 1.5px solid #eee;
+      background: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      font-family: 'Pretendard', sans-serif;
+      color: #111;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .store-btn:hover { background: #f9f9f9; border-color: #ccc; }
+
+    .store-btn svg { flex-shrink: 0; }
+
+    .store-btn .store-label { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+    .store-btn .store-sub { font-size: 11px; font-weight: 400; color: #999; }
+
+    /* 앱 QR 모달 제목 */
+    .app-qr-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #111;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    /* 딤 오버레이 */
+    .modal-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 10;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      border-radius: 40px 40px 0 0;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* 하단 모달 */
+    .bottom-modal {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border-radius: 24px 24px 0 0;
+      padding: 32px 24px 40px;
+      z-index: 11;
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+
+    .bottom-modal.active {
+      transform: translateY(0);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 32px;
+      height: 32px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+    }
+
+    .modal-close:hover { color: #333; }
+
+    .modal-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      margin-top: 30px;
+    }
+
+    .modal-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #111;
+      letter-spacing: -0.75px;
+      margin-top: 24px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .modal-desc {
+      font-size: 18px;
+      font-weight: 400;
+      color: #707075;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .modal-input {
+      width: 100%;
+      border: 1.5px solid #ddd;
+      border-radius: 10px;
+      padding: 16px;
+      font-size: 15px;
+      font-family: 'Pretendard', sans-serif;
+      color: #111;
+      outline: none;
+      margin-bottom: 12px;
+      transition: border-color 0.2s;
+    }
+
+    .modal-input:focus { border-color: #F37521; }
+
+    .modal-input::placeholder { color: #bbb; }
+
+    .modal-input::placeholder span { color: #e05; }
+
+    .modal-submit {
+      width: 100%;
+      padding: 17px;
+      border-radius: 10px;
+      background: #ccc;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      font-family: 'Pretendard', sans-serif;
+      border: none;
+      cursor: pointer;
+      margin-bottom: 16px;
+      transition: background 0.2s;
+    }
+
+    .modal-submit.enabled { background: #F37521; cursor: pointer; }
+
+    .modal-agree {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+      gap: 6px;
+      font-size: 15px;
+      color: #666;
+      cursor: pointer;
+      user-select: none;
+      width: 100%;
+      text-align: left;
+    }
+
+    .modal-agree input[type="checkbox"] {
+      display: none;
+    }
+
+    .custom-checkbox {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      border: 2px solid #ccc;
+      background: #fff;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .modal-agree input[type="checkbox"]:checked + .custom-checkbox {
+      background: #F37521;
+      border-color: #F37521;
+    }
+
+    .custom-checkbox svg {
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+
+    .modal-agree input[type="checkbox"]:checked + .custom-checkbox svg {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="phone">
+    <div class="phone-inner">
+
+      <!-- 상단 바 -->
+      <div class="top-bar">
+        <button class="icon-btn" onclick="openShareModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+            <polyline points="16 6 12 2 8 6"/>
+            <line x1="12" y1="2" x2="12" y2="15"/>
+          </svg>
+        </button>
+        <button class="icon-btn" onclick="openModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- 프로필 -->
+      <div class="profile">
+        <div class="avatar">
+          <img src="무제 폴더 5/App_Icon_512.png" alt="한화생명" />
+        </div>
+        <div class="profile-name">플러스 파이</div>
+        <div class="profile-bio">앞서가는 부모들의 자산공식</div>
+      </div>
+
+      <!-- 소셜 아이콘 -->
+      <div class="socials">
+        <!-- YouTube -->
+        <a href="https://www.youtube.com/@pluspiofficial" target="_blank" class="social-icon" title="YouTube">
+          <img src="무제 폴더 5/ic_youtube.png" alt="YouTube" style="width:56px;height:56px;object-fit:contain;" />
+        </a>
+      </div>
+
+      <!-- 링크 카드들 -->
+      <div class="links">
+
+        <a href="#" class="link-card text-only" style="background:#F37521;" onclick="handleAppDownload(event)">
+          <span class="card-text" style="color:#fff;">파이 앱 다운로드</span>
+        </a>
+
+
+        <!-- 유튜브 영상 -->
+        <div class="youtube-card" style="position:relative; padding-top:56.25%; border-radius:14px; overflow:hidden;">
+          <iframe
+            src="https://www.youtube.com/embed/YkLw1rakrIY?autoplay=1&mute=1&start=34&loop=1&playlist=YkLw1rakrIY&rel=0"
+            style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;"
+            allow="autoplay; encrypted-media"
+            allowfullscreen
+          ></iframe>
+        </div>
+
+        <!-- 홈페이지 링크들 -->
+        <a href="https://plus-pi.com/" target="_blank" class="link-card with-thumb">
+          <div class="thumb">
+            <img src="무제 폴더 6/ic_app.01.png" alt="플러스 파이" />
+          </div>
+          <span class="card-text">플러스 파이 홈페이지</span>
+        </a>
+
+        <a href="https://www.hanwhalife.com/" target="_blank" class="link-card with-thumb">
+          <div class="thumb">
+            <img src="무제 폴더 6/ic_app.02.png" alt="한화생명" />
+          </div>
+          <span class="card-text">한화생명 홈페이지</span>
+        </a>
+
+        <a href="https://plusbrand.co.kr/" target="_blank" class="link-card with-thumb">
+          <div class="thumb">
+            <img src="무제 폴더 6/ic_app.03.png" alt="플러스 브랜드" />
+          </div>
+          <span class="card-text">플러스 브랜드 소개</span>
+        </a>
+
+      </div>
+
+
+    </div>
+
+    <!-- 스토어 선택 모달 -->
+    <div class="bottom-modal" id="appModal">
+      <button class="modal-close" onclick="closeAppModal()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+      <div class="modal-avatar" style="margin-top:30px;">
+        <img src="무제 폴더 5/App_Icon_512.png" alt="파이" />
+      </div>
+      <div class="modal-title">파이 앱 다운로드</div>
+      <div class="modal-desc" style="margin-bottom:24px;">스토어를 선택해주세요</div>
+
+      <button class="store-btn" onclick="openAppQr('appstore')">
+        <img src="ic_store_apple.png" width="28" height="28" style="object-fit:contain;" />
+        <div class="store-label">
+          <span class="store-sub">다운로드</span>
+          App Store
+        </div>
+      </button>
+
+      <button class="store-btn" onclick="openAppQr('googleplay')">
+        <img src="ic_store_google.png" width="28" height="28" style="object-fit:contain;" />
+        <div class="store-label">
+          <span class="store-sub">다운로드</span>
+          Google Play
+        </div>
+      </button>
+    </div>
+
+    <!-- 앱 QR 모달 -->
+    <div class="bottom-modal" id="appQrModal">
+      <button class="modal-close" onclick="closeAppQrModal()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+      <div class="modal-title" id="appQrTitle" style="margin-top:30px;">App Store</div>
+      <div class="modal-desc" style="margin-bottom:24px;">QR코드로 스캔해 다운로드하세요</div>
+      <div class="qr-wrap" style="margin-bottom:20px;">
+        <img id="appQrImg" src="" alt="QR코드" style="width:100%;height:100%;display:block;border-radius:12px;" />
+      </div>
+      <button class="qr-save-btn">이미지로 저장하기</button>
+    </div>
+
+    <!-- 토스트 -->
+    <div class="toast" id="toast">복사되었어요!</div>
+
+    <!-- 딤 오버레이 -->
+    <div class="modal-overlay" id="overlay" onclick="closeAll()"></div>
+
+    <!-- 공유 모달 -->
+    <div class="bottom-modal" id="shareModal">
+      <button class="modal-close" onclick="closeShareModal()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+
+      <div class="modal-avatar">
+        <img src="무제 폴더 5/App_Icon_512.png" alt="플러스 파이" />
+      </div>
+
+      <div style="position:relative;width:100%;display:flex;align-items:center;justify-content:center;margin-bottom:24px;margin-top:24px;">
+        <span style="font-size:20px;font-weight:700;color:#111;letter-spacing:-0.75px;">pluspi.co/official</span>
+        <button class="share-copy-btn" id="copyBtn" onclick="copyUrl()" style="background:none;padding:0;display:flex;align-items:center;position:absolute;left:calc(50% + 80px);">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="qr-wrap" style="margin-bottom:20px;"></div>
+      <button class="qr-save-btn">이미지로 저장하기</button>
+    </div>
+
+    <!-- 하단 구독 모달 -->
+    <div class="bottom-modal" id="subscribeModal">
+      <button class="modal-close" onclick="closeModal()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+
+      <div class="modal-avatar">
+        <img src="무제 폴더 5/App_Icon_512.png" alt="플러스 파이" />
+      </div>
+
+      <div class="modal-title">플러스 파이 구독하기</div>
+      <div class="modal-desc">중요한 소식을 빠르게 만나보세요!</div>
+
+      <input
+        class="modal-input"
+        id="emailInput"
+        type="email"
+        placeholder="이메일을 적어주세요*"
+        oninput="checkForm()"
+      />
+
+      <label class="modal-agree">
+        <input type="checkbox" id="agreeCheck" onchange="checkForm()" />
+        <span class="custom-checkbox">
+          <svg width="13" height="10" viewBox="0 0 13 10" fill="none">
+            <polyline points="1.5,5 5,8.5 11.5,1.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        [필수] 개인정보 수집 및 이용과 광고성 정보 수신 동의
+      </label>
+
+      <button class="modal-submit" id="submitBtn" disabled>구독</button>
+    </div>
+
+  </div>
+
+  <script>
+    const shareUrl = 'https://pluspi.co/official';
+    const storeUrls = {
+      appstore: 'https://apps.apple.com/kr/app/%ED%8C%8C%EC%9D%B4/id6755743981',
+      googleplay: 'https://play.google.com/store/apps/details?id=hw.dp.plus'
+    };
+
+    function isMobile() {
+      return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 768;
+    }
+
+    function handleAppDownload(e) {
+      e.preventDefault();
+      if (isMobile()) {
+        const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+        window.open(isIOS ? storeUrls.appstore : storeUrls.googleplay, '_blank');
+      } else {
+        document.getElementById('overlay').classList.add('active');
+        document.getElementById('appModal').classList.add('active');
+      }
+    }
+
+    function closeAppModal() {
+      document.getElementById('overlay').classList.remove('active');
+      document.getElementById('appModal').classList.remove('active');
+    }
+
+    function openAppQr(store) {
+      const url = storeUrls[store];
+      const title = store === 'appstore' ? 'App Store' : 'Google Play';
+      document.getElementById('appQrTitle').textContent = title;
+      document.getElementById('appQrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(url)}`;
+      document.getElementById('appModal').classList.remove('active');
+      document.getElementById('appQrModal').classList.add('active');
+    }
+
+    function closeAppQrModal() {
+      document.getElementById('overlay').classList.remove('active');
+      document.getElementById('appQrModal').classList.remove('active');
+    }
+
+    function openModal() {
+      document.getElementById('overlay').classList.add('active');
+      document.getElementById('subscribeModal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('overlay').classList.remove('active');
+      document.getElementById('subscribeModal').classList.remove('active');
+    }
+
+    function openShareModal() {
+      document.getElementById('overlay').classList.add('active');
+      document.getElementById('shareModal').classList.add('active');
+    }
+
+    function closeShareModal() {
+      document.getElementById('overlay').classList.remove('active');
+      document.getElementById('shareModal').classList.remove('active');
+    }
+
+    function closeAll() {
+      document.getElementById('overlay').classList.remove('active');
+      document.getElementById('subscribeModal').classList.remove('active');
+      document.getElementById('shareModal').classList.remove('active');
+      document.getElementById('appModal').classList.remove('active');
+      document.getElementById('appQrModal').classList.remove('active');
+    }
+
+    function copyUrl() {
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+      });
+    }
+
+    function downloadQR(format) {
+      const url = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&format=${format}&data=${encodeURIComponent(shareUrl)}`;
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `qrcode.${format}`;
+      a.click();
+    }
+
+    function checkForm() {
+      const email = document.getElementById('emailInput').value.trim();
+      const agreed = document.getElementById('agreeCheck').checked;
+      const btn = document.getElementById('submitBtn');
+      if (email && agreed) {
+        btn.classList.add('enabled');
+        btn.disabled = false;
+      } else {
+        btn.classList.remove('enabled');
+        btn.disabled = true;
+      }
+    }
+  </script>
+
+</body>
+</html>
