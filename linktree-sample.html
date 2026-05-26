@@ -470,7 +470,12 @@
       flex-direction: column;
       align-items: center;
       gap: 0;
+      max-height: 90vh;
+      overflow-y: auto;
+      scrollbar-width: none;
     }
+
+    .bottom-modal::-webkit-scrollbar { display: none; }
 
     .bottom-modal.active {
       transform: translateY(0);
