@@ -74,6 +74,15 @@
         height: auto;
         padding: 20px 20px 80px;
       }
+
+      .modal-overlay {
+        position: fixed;
+        border-radius: 0;
+      }
+
+      .bottom-modal {
+        position: fixed;
+      }
     }
 
     /* 상단 바 */
@@ -440,13 +449,14 @@
 
     /* 딤 오버레이 */
     .modal-overlay {
-      position: fixed;
+      position: absolute;
       inset: 0;
       background: rgba(0,0,0,0.45);
       z-index: 10;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.3s ease;
+      border-radius: 40px 40px 0 0;
     }
 
     .modal-overlay.active {
@@ -456,7 +466,7 @@
 
     /* 하단 모달 */
     .bottom-modal {
-      position: fixed;
+      position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
