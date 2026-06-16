@@ -25,4 +25,4 @@ cd linktreecopy
 python3 -m http.server 8080
 ```
 
-브라우저에서 `http://localhost:8080/linktree-sample.html` 접속
+브라우저에서 `http://localhost:8080/` 접속
